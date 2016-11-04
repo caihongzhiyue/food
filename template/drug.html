@@ -1,0 +1,8 @@
+<div class="container">
+	<div class="panel panel-warning">
+	    <div class="panel-heading">药品分类</div>
+		<ul class="list-group">
+			<li class="list-group-item" ng-repeat="drug in drugLists | orderBy:'-name'"><a href="#/navbar/drugList/{{drug.id}}/1">{{ drug.name }}</a><span style="float: right;font-size: 10px;width:550px;" class="singleText" title="{{ drug.description }}">{{ drug.description }}</span></li>
+		</ul>
+	</div>
+</div>

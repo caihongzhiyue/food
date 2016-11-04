@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Angular和Bootstrap整合项目</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body ng-app="foodModule">
+    <ui-view></ui-view>
+
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script type="text/javascript" src="js/angular.js"></script>
+    <script type="text/javascript" src="js/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="js/ngFlowGrid.js"></script>
+    <script type="text/javascript" src="js/angular-ui-router.js"></script>
+    <script type="text/javascript">
+        var foodApp = angular.module('foodModule',['ui.router','ngSanitize','ngFlowGrid'])
+        .run(function($rootScope, $state, $stateParams) {
+            $rootScope.foodPrefix = "http://tnfs.tngou.net/image";
+
+            $rootScope.$state = $state;
+            $rootScope.$stateParams = $stateParams;
+            $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
+                // to be used for back button //won't work when page is reloaded.
+                $rootScope.previousState_name = fromState.name;
+                $rootScope.previousState_params = fromParams;
+            });
+            //back button function called from back button's ng-click="back()"
+            $rootScope.back = function(obj) {
+              if($rootScope.previousState_name.trim().length != 0){
+                $state.go($rootScope.previousState_name, $rootScope.previousState_params);
+                // $state.go('^');
+              }else{
+                // alert('没有可返回的页面!');
+                $('#'+obj).popover('show');
+
+              }
+            };
+        })
+        .directive("compile", function($compile) {
+            return function(scope,element,attrs){
+              scope.$watch(
+                function(scope){
+                  return scope.$eval(attrs.compile);
+                },
+                function(value){
+                  element.html(value);
+                  $compile(element.contents())(scope);
+                }
+              )
+            }
+        })
+        .config(function($stateProvider,$urlMatcherFactoryProvider,$locationProvider,$urlRouterProvider){
+            $urlMatcherFactoryProvider.caseInsensitive(true);
+            $urlRouterProvider.otherwise('/navbar/home');  //默认页
+            $stateProvider
+            .state("navbar",{
+                url:"/navbar",
+                templateUrl:"template/navbar.html",
+                controller:"navbarController",
+                resolve:{
+                    foodCate:function($http){
+                        return $http({
+                            url:'http://localhost/baidu-api/foodindex.php',
+                            method:'get'
+                        }).then(function(response){
+                            return response;
+                        })
+                    },
+                    infoCate:function($http){
+                        return $http({
+                            url:'http://localhost/baidu-api/infoindex.php',
+                            method:'get'
+                        }).then(function(response){
+                            return response;
+                        })
+                    }
+                }
+            })
+            .state("navbar.home",{
+                url:"/home",
+                templateUrl:"template/home.html",
+                controller:"homeController"
+            })
+            .state("navbar.drug",{
+                url:"/drug",
+                templateUrl:"template/drug.html",
+                controller:"drugController",
+                resolve:{
+                    drugindexMsg:function($http,$stateParams){
+                        return $http({
+                                    url:'http://localhost/baidu-api/drugindex.php',
+                                    method:'get',
+                                }).then(function(response){
+                                    return response;
+                                })
+                    }
+                }
+            })
+            .state("navbar.drugList",{
+                url:"/drugList/:id/:page",
+                templateUrl:"template/drugList.html",
+                controller:"drugListController",
+                resolve:{
+                    drugListMsg:function($http,$stateParams){
+                        var rows = 20;
+                        var params = {
+                            id:$stateParams.id,
+                            page:$stateParams.page,
+                            rows:rows
+                        };
+                        return $http({
+                                    url:'http://localhost/baidu-api/drugList.php',
+                                    method:'get',
+                                    params:params
+                                }).then(function(response){
+                                    var pageCountList = [];
+                                    var x=Math.ceil(response.data.total/rows);
+                                    for(var i=1;i<x;i++){
+                                        if(i<=10){pageCountList.push(i);}
+                                    }
+                                    return {
+                                                pageCountList:pageCountList,
+                                                response:response,
+                                                drugCateID:$stateParams.id
+                                            };
+                                })
+                    }
+                }
+            })
+            .state("navbar.infoList",{
+                url:"/infoList/:id/:page",
+                templateUrl:"template/infoList.html",
+                controller:"infoListController",
+                resolve:{
+                    infoListMsg:function($http,$stateParams){
+                        var rows = 30;
+                        var params = {
+                            id:$stateParams.id,
+                            page:$stateParams.page,
+                            rows:rows
+                        };
+                        return $http({
+                                    url:'http://localhost/baidu-api/infolist.php',
+                                    method:'get',
+                                    params:params
+                                }).then(function(response){
+                                    var pageCountList = [];
+                                    var x=Math.ceil(response.data.total/rows);
+                                    for(var i=1;i<x;i++){
+                                        pageCountList.push(i);
+                                    }
+                                    return {
+                                                pageCountList:pageCountList,
+                                                response:response,
+                                                infoCateID:$stateParams.id
+                                            };
+                                })
+                    }
+                }
+            })
+            .state("navbar.infoDetail",{
+                url:"/infoDatail/:id",
+                templateUrl:"template/infoDetail.html",
+                controller:"infoDetailController",
+                resolve:{
+                    infoDetailMsg:function($http,$stateParams){
+                        return $http({
+                                    url:'http://localhost/baidu-api/infodetail.php',
+                                    method:'get',
+                                    params:{
+                                        id:$stateParams.id
+                                    }
+                                }).then(function(response){
+                                    return response;
+                                })
+                    }
+                }
+            })
+            .state("navbar.foodList",{
+                url:"/foodList/:id/:page",
+                templateUrl:"template/foodList.html",
+                controller:"foodListController",
+                resolve:{
+                    foodListMsg:function($http,$stateParams){
+                        //初始化参数设置，id为分类的id，page为第几页，rows为每页记录数
+                        var rows = 30;
+                        //console.log($stateParams);
+                        var params = {
+                            id:$stateParams.id,
+                            page:$stateParams.page,
+                            rows:rows
+                        };
+                       return $http({
+                                    url:'http://localhost/baidu-api/foodlist.php',
+                                    method:'get',
+                                    params:params
+                                }).then(function(response){
+                                    console.log(response);
+                                    var pageCountList = [];
+                                    var x=Math.ceil(response.data.total/rows);
+                                    for(var i=1;i<x;i++){
+                                        pageCountList.push(i);
+                                    }
+                                    return {
+                                                pageCountList:pageCountList,
+                                                response:response,
+                                                foodCateID:$stateParams.id
+                                            };
+                                })
+                    }
+                }
+            })
+            .state("navbar.foodDetail",{
+                url:"/foodDatail/:id",
+                templateUrl:"template/foodDetail.html",
+                controller:"foodDetailController",
+                resolve:{
+                    foodDetailMsg:function($http,$stateParams){
+                        return $http({
+                                    url:'http://localhost/baidu-api/fooddetail.php',
+                                    method:'get',
+                                    params:{
+                                        id:$stateParams.id
+                                    }
+                                }).then(function(response){
+                                    return response;
+                                })
+                    }
+                }
+            })
+            .state("navbar.knowledge",{
+                url:"/knowledge",
+                templateUrl:"template/knowledge.html",
+                controller:"knowledgeController",
+                resolve:{
+                    knowledgeMsg:function($http,$stateParams){
+                        return $http({
+                                    url:'http://localhost/baidu-api/knowledge.php',
+                                    method:'get'
+                                }).then(function(response){
+                                    return response;
+                                })
+                    }
+                }
+            })
+        })
+        .controller("navbarController",function($scope,foodCate,infoCate){
+            $scope.foodCategory = foodCate.data.tngou;
+            $scope.infoCategory = infoCate.data.tngou;
+        })
+        .controller("homeController",function($scope){
+            
+        })
+        .controller("drugController",function($scope,drugindexMsg){
+            //console.log(drugindexMsg);
+            $scope.drugLists =drugindexMsg.data.tngou;
+        })
+        .controller("drugListController",function($scope,drugListMsg){
+            //console.log(drugListMsg.response.data.tngou);
+            $scope.drugListDetail = drugListMsg.response.data.tngou;
+            $scope.drugCateID = drugListMsg.drugCateID;
+            $scope.drugListsPageCount = drugListMsg.pageCountList;
+            $scope.sortup = "+";
+            $scope.priceName = "price";
+            $scope.sort = function(priceName){
+                if($scope.sortup == "-"){
+                    $scope.sortup = "+";
+                }else{
+                    $scope.sortup = "-";
+                }
+                $scope.priceName = priceName;
+            }
+            $scope.getSortArrow = function(priceName){
+                if($scope.priceName == priceName){
+                    if($scope.sortup == '+'){
+                        return 'icon-sort-up';
+                    }else{
+                        return 'icon-sort-down';
+                    }
+                }
+                
+            }
+        })
+        .controller("infoListController",function($scope,infoListMsg){
+            $scope.infoLists =infoListMsg.response.data.tngou;
+            $scope.infoCateID = infoListMsg.infoCateID;
+            $scope.infoListsPageCount = infoListMsg.pageCountList;
+        })
+        .controller("infoDetailController",function($scope,infoDetailMsg){
+            $scope.infoDetail = infoDetailMsg.data;
+            $scope.myHtml = infoDetailMsg.data.message;
+            $scope.goBack = function(){
+                window.history.back();
+            }
+        })        
+        .controller("foodListController",function($scope,foodListMsg){
+            $scope.foodLists =foodListMsg.response.data.tngou;
+            $scope.foodCateID = foodListMsg.foodCateID;
+            $scope.foodListsPageCount = foodListMsg.pageCountList;
+        })
+        .controller("foodDetailController",function($scope,$sce,foodDetailMsg){
+            $scope.footDetail = foodDetailMsg.data;
+            $scope.myHtml = foodDetailMsg.data.message;
+            $scope.goBack = function(){
+                window.history.back();
+            }
+        })
+        .controller("knowledgeController",function($scope,$sce,knowledgeMsg){
+            console.log(knowledgeMsg);
+            $scope.knowledges = knowledgeMsg.data.list;
+        })
+        
+    </script>
+</body>
+</html>
+<!-- 
+    1 新建module
+    2 编写config
+    3 建立controller
+    4 body ng-app
+    5 写下ui-view
+ -->

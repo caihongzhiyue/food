@@ -1,0 +1,35 @@
+<div class="container">
+	<div class="panel panel-info">
+	    <div class="panel-heading">药品列表</div>
+	    <div class="panel-body">
+    		<p style="color:#f00">药品监管部门提示：如发现本网站有任何直接或变相销售处方药行为，请保留证据，拨打12331举报，举报查实给予奖励。</p>
+    		<p>温馨提示：<br />&nbsp;&nbsp;&nbsp;1.图片均为康爱多对原品的真实拍摄，仅供参考；如遇新包装上市可能存在上新滞后，请以实物为准。<br />&nbsp;&nbsp;&nbsp;2.请根据自己的具体病情选购，在购买时也应仔细阅读药品标签内容及说明书或者在药师指导下购买和使用<br />&nbsp;&nbsp;&nbsp;3.如果价格有出入的地方，请以实际价格为主。</p>
+  		</div>
+		<table class="table" border="1" cellspacing="0" cellpadding="0">
+			<thead>
+				<tr>
+					<th style="width:100px;text-align: center;">药品名称</th>
+					<th style="text-align: center;">药品图片</th>
+					<th style="text-align: center;">功能主治</th>
+					<th style="width:100px;text-align: center;" ng-click="sort('price')"><a href="javascript:;" style="color:#000">参考价格</a><b ng-class="getSortArrow('price')"></b></th>
+					<th style="text-align: center;">药品描述</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="druglist in drugListDetail | orderBy:sortup + priceName">
+					<td style="text-align: center;">{{ druglist.name }}</td>
+					<td style="text-align: center;"><img class="img-circle" ng-src="{{ foodPrefix }}{{ druglist.img }}" alt="{{ druglist.keyword }}" style="height:100px;"></td>
+					<td>{{ druglist.tag }}</td>
+					<td align="center">{{ druglist.price }}</td>
+					<td>{{ druglist.description }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<nav style="text-align:center;">
+  <ul class="pagination pagination-lg">
+    <li ng-repeat="p in drugListsPageCount"><a href="#/navbar/drugList/{{drugCateID}}/{{p}}">{{p}}</a></li>
+  </ul>
+</nav>

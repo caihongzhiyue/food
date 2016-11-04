@@ -1,0 +1,81 @@
+ body {
+  padding-top: 70px;
+  overflow-x: hidden;
+}
+/*瀑布流*/
+ul{
+    list-style: none;
+}
+.flowGridItem,.flowGridColumn,.flowGridColumn:last-of-type{box-sizing: border-box;}
+.flowGrid:before,.flowGrid:after{
+    content: "";
+    display: table;
+}
+.flowGrid:after{
+    clear:both;
+}
+.flowGridItem{ margin-bottom:10px;box-shadow: 0 10px 20px 3px #888888;border-radius: 10px}
+.flowGridItem:hover .thumbnail{border-color:#428bca;}
+.flowGridItem img{width:100%;}
+.flowGridColumn{
+    float: left;
+    padding-left: 10px;
+}
+.flowGridColumn:last-of-type{
+    padding-right: 10px;
+}
+/*单行*/
+.singleText{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+/*多行*/
+.multText{
+    position:relative;
+    line-height:1.4em;
+    height:4em;
+    overflow:hidden;
+}
+.multText:after {
+    content:"...";
+    font-weight:bold;
+    position:absolute;
+    bottom:0;
+    right:0;
+    padding:0 20px 1px 45px;
+    background:url(../img/ellipsis_bg.png) repeat-y;
+}
+@media screen and (min-width: 992px){
+  .thumbnail img{
+    height: 180px;
+  }
+}
+.drugitem{
+  transition: all 0.5s;
+}
+.drugitem:hover{
+  box-shadow: 0 10px 20px 3px #888888;
+  transform: translateY(-10px);
+}
+.icon-sort-up{
+  height:0;
+  width:0;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  border-bottom: 10px solid #000;
+  display: inline-block;
+}
+.icon-sort-down{
+  height:0;
+  width:0;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  border-top: 10px solid #000;
+  display: inline-block;
+}
+/*infoDetail页面img居中*/
+#infoDetailimgCenter p:first-of-type{
+  text-align: center;
+}
+

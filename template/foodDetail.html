@@ -1,0 +1,28 @@
+<div class="container marketing">
+	<div class="row featurette">
+		<div class="col-md-5">
+			<img class="img-responsive" ng-src="{{ foodPrefix }}{{ footDetail.img }}" alt="{{ footDetail.keywords }}">
+		</div>
+		<div class="col-md-7">
+			<h1 class="featurette-heading"> {{ footDetail.name }} <span class="text-muted" style="font-size: 20px;">材料：({{ footDetail.food }})</span></h1>
+			<p class="lead">{{ footDetail.description }}</p>
+			<!-- 利用$sce对Html标签进行解析 -->
+			<!-- <p class="lead" ng-bind-html="myHtml"></p> -->
+			<!-- 利用directive的compile指令对Html标签进行解析 -->
+			<p class="lead" compile="myHtml"></p>
+			<!-- <p><a class="btn btn-default" href="javascript:;" role="button" ng-click="goBack()">返回</a></p> -->
+			<p><a class="btn btn-primary" href="javascript:;" role="button" ng-click="back()" id="foodList">返回</a></p>
+		</div>
+	</div>
+</div>
+
+
+<!--
+<div class="row">
+	<div class="col-lg-4" style="text-align: center;width:100%;">
+		<img class="img-circle" ng-src="{{ foodPrefix }}{{ footDetail.img }}" alt="{{ footDetail.name }}">
+		<h1>{{ footDetail.name }}</h1>
+		<div ng-bind-html="myHtml"></div>
+	</div>
+</div>
+  -->
