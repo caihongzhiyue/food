@@ -74,7 +74,7 @@
                 resolve:{
                     foodCate:function($http){
                         return $http({
-                            url:'http://localhost/baidu-api/foodindex.php',
+                            url:'./baidu-api/foodindex.php',
                             method:'get'
                         }).then(function(response){
                             return response;
@@ -82,7 +82,7 @@
                     },
                     infoCate:function($http){
                         return $http({
-                            url:'http://localhost/baidu-api/infoindex.php',
+                            url:'./baidu-api/infoindex.php',
                             method:'get'
                         }).then(function(response){
                             return response;
@@ -102,7 +102,7 @@
                 resolve:{
                     drugindexMsg:function($http,$stateParams){
                         return $http({
-                                    url:'http://localhost/baidu-api/drugindex.php',
+                                    url:'./baidu-api/drugindex.php',
                                     method:'get',
                                 }).then(function(response){
                                     return response;
@@ -123,7 +123,7 @@
                             rows:rows
                         };
                         return $http({
-                                    url:'http://localhost/baidu-api/drugList.php',
+                                    url:'./baidu-api/drugList.php',
                                     method:'get',
                                     params:params
                                 }).then(function(response){
@@ -154,7 +154,7 @@
                             rows:rows
                         };
                         return $http({
-                                    url:'http://localhost/baidu-api/infolist.php',
+                                    url:'./baidu-api/infolist.php',
                                     method:'get',
                                     params:params
                                 }).then(function(response){
@@ -179,7 +179,7 @@
                 resolve:{
                     infoDetailMsg:function($http,$stateParams){
                         return $http({
-                                    url:'http://localhost/baidu-api/infodetail.php',
+                                    url:'./baidu-api/infodetail.php',
                                     method:'get',
                                     params:{
                                         id:$stateParams.id
@@ -205,7 +205,7 @@
                             rows:rows
                         };
                        return $http({
-                                    url:'http://localhost/baidu-api/foodlist.php',
+                                    url:'./baidu-api/foodlist.php',
                                     method:'get',
                                     params:params
                                 }).then(function(response){
@@ -231,7 +231,7 @@
                 resolve:{
                     foodDetailMsg:function($http,$stateParams){
                         return $http({
-                                    url:'http://localhost/baidu-api/fooddetail.php',
+                                    url:'./baidu-api/fooddetail.php',
                                     method:'get',
                                     params:{
                                         id:$stateParams.id
@@ -249,7 +249,7 @@
                 resolve:{
                     knowledgeMsg:function($http,$stateParams){
                         return $http({
-                                    url:'http://localhost/baidu-api/knowledge.php',
+                                    url:'./baidu-api/knowledge.php',
                                     method:'get'
                                 }).then(function(response){
                                     return response;
