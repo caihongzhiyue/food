@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>电子签名</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body,html{
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			/* transform-origin: 50% 50%;
+			transform: rotate(90deg); */
+
+		}
+		.signWrap{
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.signWrap .js-signature{
+			width: 100%;
+			height: 100%;
+		}
+		.signWrap .signBtn{
+			position: absolute;
+			left: -70px;
+			bottom: 108px;
+			transform: rotate(90deg);
+		}
+		.signWrap .signBtn button{
+			width: 100px;
+			height: 30px;
+			background:#abcdef;
+			border:1px solid #333;
+			border-radius: 8px;
+			color: #fff;
+			outline: none;
+		}
+		.signRes{
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.signRes p{
+			padding: 20px 10px;
+		}
+		.signRes .signImgRes{
+			position: absolute;
+			top: -20%;
+			left: 0;
+		}
+		.signRes .signImgRes .signImg{
+			background: #ccc;
+			transform: scale(0.55,0.55) rotate(-90deg);
+		}
+		.signRes .signResBtn{
+			position: absolute;
+			top: 52%;
+			width: 100%;
+			height: 35px;
+			text-align: center;
+		}
+		.signRes .signResBtn button{
+			width: 100px;
+			height: 30px;
+			background:#abcdef;
+			border:1px solid #333;
+			border-radius: 8px;
+			color: #fff;
+			outline: none;
+		}
+	</style>
+	<script type="text/javascript" src="jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="jq-signature.js"></script>
+</head>
+<body>
+	<!-- <div class="htmleaf-container">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<h3>高级例子：</h3>
+					<p>Sign Below:</p>
+					<div class="js-signature" data-width="600" data-height="200" data-border="1px solid black" data-line-color="#bc0000" data-auto-fit="true"></div>
+					<p><button id="clearBtn" class="btn btn-default" onclick="clearCanvas();">Clear Canvas</button>&nbsp;<button id="saveBtn" class="btn btn-default" onclick="saveSignature();" disabled>Save Signature</button></p>
+					<div id="signature">
+						<p><em>Your signature will appear here when you click "Save Signature"</em></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+	
+	<div class="signWrap">
+		<div id="js-signature" class="js-signature" data-line-color="#bc0000" data-auto-fit="true"></div>
+		<p class="signBtn">
+			<button id="clearBtn" class="btn btn-default" onclick="clearCanvas();">清除</button>
+			<button id="saveBtn" class="btn btn-default" onclick="saveSignature();">保存</button>
+		</p>
+	</div>
+	<div class="signRes" style="display: none;">
+		<p>下图是您的电子签名，请再次确认：</p>
+		<div class="signImgRes"></div>
+		<div class="signResBtn">
+			<button id="bankBtn" class="btn btn-default" onclick="bankCanvas();">返回</button>
+			<button id="submitBtn" class="btn btn-default" onclick="submitSignature();">提交</button>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).on('ready', function() {
+			if ($('.js-signature').length) {
+				console.log($('.js-signature').jqSignature('getDataURL'))
+				$('.js-signature').jqSignature();
+			}
+		});
+		//清除
+		function clearCanvas(){
+			$('.js-signature').eq(0).jqSignature('clearCanvas');
+		}
+		//保存
+		function saveSignature(){
+			var dataUrl = $('.js-signature').eq(0).jqSignature('getDataURL');
+			$('.signWrap').hide();
+			$('.signRes').show();
+			$('.signRes img').remove(".signImg");
+			var img = $('<img>').attr('src', dataUrl);
+			img.addClass("signImg");
+			$('.signImgRes').append(img);
+		}
+		//返回
+		function bankCanvas(){
+			//location.href = "";  //使用刷新页面的方式
+			$('.signRes').hide();
+			$('.signWrap').show();
+			$('.js-signature').eq(0).jqSignature('clearCanvas');
+		}
+		//提交
+		function submitSignature(){
+			alert("OK~~~~~~~~~~~~添加推送后台");
+		}
+		/*======================================对按钮的点击和disabled进行控制====================================*/
+	</script>
+</body>
+</html>
